@@ -24,6 +24,15 @@ export default function Preloader() {
   const [currentChar, setCurrentChar] = useState(0);
 
   useEffect(() => {
+    // Force completion after 3 seconds max
+    const maxTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(maxTimer);
+  }, []);
+
+  useEffect(() => {
     if (!isLoading) return;
 
     if (currentLine < codeLines.length) {
@@ -32,19 +41,19 @@ export default function Preloader() {
       if (currentChar < line.length) {
         const timer = setTimeout(() => {
           setCurrentChar(currentChar + 1);
-        }, 30);
+        }, 15);
         return () => clearTimeout(timer);
       } else {
         const timer = setTimeout(() => {
           setCurrentLine(currentLine + 1);
           setCurrentChar(0);
-        }, 100);
+        }, 50);
         return () => clearTimeout(timer);
       }
     } else {
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 500);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [currentLine, currentChar, isLoading]);
